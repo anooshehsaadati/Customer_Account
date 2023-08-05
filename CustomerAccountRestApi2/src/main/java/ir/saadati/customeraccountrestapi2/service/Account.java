@@ -1,5 +1,6 @@
 package ir.saadati.customeraccountrestapi2.service;
 
+import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -18,6 +19,10 @@ public class Account {
         this.updatedDate = updatedDate;
     }
 
+    public Account() {
+
+    }
+
     public Account(int customerId, String accountNumber) {
         this.setCustomerId(customerId);
         this.setAccountNumber(accountNumber);
@@ -28,8 +33,18 @@ public class Account {
      *
      * @return accountId
      */
+    @XmlElement
     public int getAccountId() {
         return accountId;
+    }
+
+    /**
+     * set value to accountId
+     *
+     * @param accountId set it
+     */
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
     }
 
     /**
@@ -37,6 +52,7 @@ public class Account {
      *
      * @return customerId
      */
+    @XmlElement
     public int getCustomerId() {
         return customerId;
     }
@@ -55,6 +71,7 @@ public class Account {
      *
      * @return accountNumber
      */
+    @XmlElement
     public String getAccountNumber() {
         return accountNumber;
     }
@@ -73,6 +90,7 @@ public class Account {
      *
      * @return createdDate
      */
+    @XmlElement
     public String getCreatedDate() {
         return createdDate;
     }
@@ -82,7 +100,13 @@ public class Account {
      *
      * @return updatedDate
      */
+    @XmlElement
     public String getUpdatedDate() {
         return updatedDate;
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" + "accountId=" + accountId + ", customerId=" + customerId + ", accountNumber='" + accountNumber + '\'' + ", createdDate='" + createdDate + '\'' + ", updatedDate='" + updatedDate + '\'' + '}';
     }
 }

@@ -30,7 +30,6 @@ public class CustomerResource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Customer createCustomer(Customer customer) throws Exception {
-        System.out.println(customer);
         customerDAO.createCustomer(customer);
         return customer;
     }
@@ -41,14 +40,9 @@ public class CustomerResource {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Customer updateCustomer(@PathParam("id") int id, Customer customer) throws Exception {
         Customer customer1 = this.getCustomer(id);
-        System.out.println(customer1);
-        System.out.println(customer1.getCustomerId());
-        System.out.println(customer);
-        System.out.println(customer.getCustomerId());
         if (customer1.getCustomerId() == 0) {
             customerDAO.createCustomer(customer);
         } else {
-            System.out.println("11");
             customer.setCustomerId(customer1.getCustomerId());
             customerDAO.updateCustomer(customer);
         }

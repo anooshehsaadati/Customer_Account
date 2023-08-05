@@ -9,9 +9,9 @@ public interface IAccountDAO {
 
     Account getAccount(int accountId) throws Exception;
 
-    void createAccount(Account account) throws Exception;
+    Account createAccount(Account account) throws Exception;
 
-    void updateAccount(Account account) throws Exception;
+    Account updateAccount(Account account) throws Exception;
 
-    void deleteAccount(Account account) throws Exception;
+    int deleteAccount(Account account) throws Exception;
 }

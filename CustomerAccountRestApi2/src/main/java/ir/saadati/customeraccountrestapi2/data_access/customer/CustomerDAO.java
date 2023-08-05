@@ -59,20 +59,22 @@ public class CustomerDAO implements ICustomerDAO {
             Connection con = connection.connectToDataBase();
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(query);
-            rs.next();
-            // TODO: 7/29/2023 if any type of this make error 
-            String firstName = rs.getString("firstName");
-            String lastName = rs.getString("lastName");
-            String idNumber = rs.getString("idNumber");
-            String phoneNumber = rs.getString("phoneNumber");
-            String address = rs.getString("address");
-            String email = rs.getString("email");
-            String birthDate = rs.getString("birthDate");
-            int gender = rs.getInt("gender");
-            String createdDate = rs.getString("createdDate");
-            String updatedDate = rs.getString("updatedDate");
-            customer = new Customer(customerId, firstName, lastName, idNumber, phoneNumber, address, email, birthDate, gender, createdDate, updatedDate);
-
+            if (rs.next()) {
+                // TODO: 7/29/2023 if any type of this make error
+                String firstName = rs.getString("firstName");
+                String lastName = rs.getString("lastName");
+                String idNumber = rs.getString("idNumber");
+                String phoneNumber = rs.getString("phoneNumber");
+                String address = rs.getString("address");
+                String email = rs.getString("email");
+                String birthDate = rs.getString("birthDate");
+                int gender = rs.getInt("gender");
+                String createdDate = rs.getString("createdDate");
+                String updatedDate = rs.getString("updatedDate");
+                customer = new Customer(customerId, firstName, lastName, idNumber, phoneNumber, address, email, birthDate, gender, createdDate, updatedDate);
+            } else {
+                customer = new Customer();
+            }
             st.close();
             // TODO: 7/29/2023 if disconnected false! 
             connection.disconnectToDataBase();
