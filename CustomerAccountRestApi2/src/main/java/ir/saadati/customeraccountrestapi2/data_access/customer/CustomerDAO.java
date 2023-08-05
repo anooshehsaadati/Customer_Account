@@ -10,16 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerDAO implements ICustomerDAO {
+    ConnectionToDataBase connection = new ConnectionToDataBase();
+    Connection con = null;
+
     @Override
     public List<Customer> getAllCustomers() throws Exception {
         // TODO: 7/29/2023 if customers table isn't exist --> error 
         String query = "SELECT * FROM customers";
         List<Customer> customers = new ArrayList<Customer>();
-        ConnectionToDataBase connection;
         try {
-            connection = new ConnectionToDataBase();
-            // TODO: 7/29/2023 if connection error and can't to connect 
-            Connection con = connection.connectToDataBase();
+            // TODO: 7/29/2023 if connection error and can't to connect
+            if (con == null) {
+                con = connection.connectToDataBase();
+            }
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(query);
             while (rs.next()) {
@@ -38,8 +41,9 @@ public class CustomerDAO implements ICustomerDAO {
                 customers.add(new Customer(customerId, firstName, lastName, idNumber, phoneNumber, address, email, birthDate, gender, createdDate, updatedDate));
             }
             st.close();
-            // TODO: 7/29/2023 if disconnected false! 
+            // TODO: 7/29/2023 if disconnected false!
             connection.disconnectToDataBase();
+            con = null;
         } catch (Exception e) {
             // TODO: 7/29/2023 My exception and handel it 
             e.printStackTrace();
@@ -51,12 +55,12 @@ public class CustomerDAO implements ICustomerDAO {
     public Customer getCustomer(int customerId) throws Exception {
         // TODO: 7/29/2023 if customerId doesn't exist or table doesn't exist 
         String query = "SELECT * FROM customers WHERE customerId=" + customerId;
-        ConnectionToDataBase connection;
         Customer customer = null;
         try {
-            connection = new ConnectionToDataBase();
-            // TODO: 7/29/2023 if connection error and can't to connect 
-            Connection con = connection.connectToDataBase();
+            // TODO: 7/29/2023 if connection error and can't to connect
+            if (con == null) {
+                con = connection.connectToDataBase();
+            }
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(query);
             if (rs.next()) {
@@ -76,8 +80,9 @@ public class CustomerDAO implements ICustomerDAO {
                 customer = new Customer();
             }
             st.close();
-            // TODO: 7/29/2023 if disconnected false! 
+            // TODO: 7/29/2023 if disconnected false!
             connection.disconnectToDataBase();
+            con = null;
         } catch (Exception e) {
             // TODO: 7/29/2023 My exception and handel it 
             e.printStackTrace();
@@ -86,100 +91,138 @@ public class CustomerDAO implements ICustomerDAO {
     }
 
     @Override
-    public void createCustomer(Customer customer) throws Exception {
-        // TODO: 7/29/2023 if any of this column not exist or wrong value or table does not exist 
-        String query = "INSERT INTO customers(`firstName`, `lastName`, `idNumber`, `phoneNumber`, `address`, `email`, `birthDate`, `gender`, `createdDate`, `updatedDate`) VALUES (?,?,?,?,?,?,?,?,?,?)";
-        ConnectionToDataBase connection;
+    public Customer createCustomer(Customer customer) throws Exception {
+        PreparedStatement st;
+        Customer customerCreated = new Customer();
+        String queryCheck = "SELECT * FROM customers WHERE idNumber=?";
         try {
-            // TODO: 7/29/2023 if connection error and can't to connect 
-            connection = new ConnectionToDataBase();
-            Connection con = connection.connectToDataBase();
-            PreparedStatement st = con.prepareStatement(query);
-            // TODO: 7/29/2023 if any type of this make error 
-            st.setString(1, customer.getFirstName());
-            st.setString(2, customer.getLastName());
-            st.setString(3, customer.getIdNumber());
-            st.setString(4, customer.getPhoneNumber());
-            st.setString(5, customer.getAddress());
-            st.setString(6, customer.getEmail());
+            // TODO: 7/29/2023 if connection error and can't to connect
+            if (con == null) {
+                con = connection.connectToDataBase();
+            }
+            st = con.prepareStatement(queryCheck);
+            st.setString(1, customer.getIdNumber());
+            ResultSet rs = st.executeQuery();
+            if (!rs.next()) {
+                // TODO: 7/29/2023 if any of this column not exist or wrong value or table does not exist
+                String query = "INSERT INTO customers(`firstName`, `lastName`, `idNumber`, `phoneNumber`, `address`, `email`, `birthDate`, `gender`, `createdDate`, `updatedDate`) VALUES (?,?,?,?,?,?,?,?,?,?)";
+                st = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                // TODO: 7/29/2023 if any type of this make error
+                st.setString(1, customer.getFirstName());
+                st.setString(2, customer.getLastName());
+                st.setString(3, customer.getIdNumber());
+                st.setString(4, customer.getPhoneNumber());
+                st.setString(5, customer.getAddress());
+                st.setString(6, customer.getEmail());
 
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-            java.util.Date myDate = df.parse(customer.getBirthDate());
-//            java.util.Date myDate = new java.util.Date(customer.getBirthDate());
-            Date sqlDate = new Date(myDate.getTime());
-            st.setDate(7, sqlDate);
-            st.setInt(8, customer.getGender());
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                java.util.Date myDate = df.parse(customer.getBirthDate());
+                Date sqlDate = new Date(myDate.getTime());
+                st.setDate(7, sqlDate);
+                st.setInt(8, customer.getGender());
 
-            Timestamp date = new Timestamp(new java.util.Date().getTime());
-            st.setTimestamp(9, date);
-            st.setTimestamp(10, date);
-            st.execute();
+                Timestamp date = new Timestamp(new java.util.Date().getTime());
+                st.setTimestamp(9, date);
+                st.setTimestamp(10, date);
+                int affectedRows = st.executeUpdate();
+
+                if (affectedRows > 0) {
+                    ResultSet generatedKeys = st.getGeneratedKeys();
+                    if (generatedKeys.next()) {
+                        int customerId = generatedKeys.getInt(1);
+                        customerCreated = this.getCustomer(customerId);
+                    }
+                }
+            } else {
+                int customerId = rs.getInt("customerId");
+                customerCreated = this.getCustomer(customerId);
+            }
 
             st.close();
-            // TODO: 7/29/2023 if disconnected false! 
+            // TODO: 7/29/2023 if disconnected false!
             connection.disconnectToDataBase();
+            con = null;
         } catch (Exception e) {
-            // TODO: 7/29/2023 My exception and handel it 
+            // TODO: 7/29/2023 My exception and handel it
             e.printStackTrace();
         }
+        return customerCreated;
     }
 
     @Override
-    public void updateCustomer(Customer customer) throws Exception {
-        // TODO: 7/29/2023 if any of this column not exist or wrong value or table does not exist 
-        String query = "UPDATE customers SET firstName=?, lastName=?, idNumber=?, phoneNumber=?, address=?, email=?, birthDate=?, gender=?, updatedDate=? WHERE customerId=?";
-        ConnectionToDataBase connection;
+    public Customer updateCustomer(Customer customer) throws Exception {
+        PreparedStatement st;
+        Customer customerCreated = new Customer();
+        String queryCheck = "SELECT * FROM customers WHERE idNumber=?";
         try {
-            // TODO: 7/29/2023 if connection error and can't to connect 
-            connection = new ConnectionToDataBase();
-            Connection con = connection.connectToDataBase();
-            PreparedStatement st = con.prepareStatement(query);
-            // TODO: 7/29/2023 if any type of this make error 
-            st.setString(1, customer.getFirstName());
-            st.setString(2, customer.getLastName());
-            st.setString(3, customer.getIdNumber());
-            st.setString(4, customer.getPhoneNumber());
-            st.setString(5, customer.getAddress());
-            st.setString(6, customer.getEmail());
+            // TODO: 7/29/2023 if connection error and can't to connect
+            if (con == null) {
+                con = connection.connectToDataBase();
+            }
+            st = con.prepareStatement(queryCheck);
+            st.setString(1, customer.getIdNumber());
+            ResultSet rs = st.executeQuery();
+            if (!rs.next()) {
 
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            java.util.Date utilDate = dateFormat.parse(customer.getBirthDate());
-            Date sqlDate = new Date(utilDate.getTime());
-            st.setDate(7, sqlDate);
-            st.setInt(8, customer.getGender());
+                // TODO: 7/29/2023 if any of this column not exist or wrong value or table does not exist
+                String query = "UPDATE customers SET firstName=?, lastName=?, idNumber=?, phoneNumber=?, address=?, email=?, birthDate=?, gender=?, updatedDate=? WHERE customerId=?";
+                st = con.prepareStatement(query);
+                // TODO: 7/29/2023 if any type of this make error
+                st.setString(1, customer.getFirstName());
+                st.setString(2, customer.getLastName());
+                st.setString(3, customer.getIdNumber());
+                st.setString(4, customer.getPhoneNumber());
+                st.setString(5, customer.getAddress());
+                st.setString(6, customer.getEmail());
 
-            Timestamp timestamp = new Timestamp(new java.util.Date().getTime());
-            st.setTimestamp(9, timestamp);
-            st.setInt(10, customer.getCustomerId());
-            st.executeUpdate();
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                java.util.Date utilDate = dateFormat.parse(customer.getBirthDate());
+                Date sqlDate = new Date(utilDate.getTime());
+                st.setDate(7, sqlDate);
+                st.setInt(8, customer.getGender());
+
+                Timestamp timestamp = new Timestamp(new java.util.Date().getTime());
+                st.setTimestamp(9, timestamp);
+                st.setInt(10, customer.getCustomerId());
+                int affectedRows = st.executeUpdate();
+
+                if (affectedRows > 0) {
+                    customerCreated = this.getCustomer(customer.getCustomerId());
+                }
+            }
             st.close();
-            // TODO: 7/29/2023 if disconnected false! 
+            // TODO: 7/29/2023 if disconnected false!
             connection.disconnectToDataBase();
+            con = null;
         } catch (Exception e) {
-            // TODO: 7/29/2023 My exception and handel it 
+            // TODO: 7/29/2023 My exception and handel it
             e.printStackTrace();
         }
+        return customerCreated;
     }
 
     @Override
-    public void deleteCustomer(Customer customer) {
-        // TODO: 7/29/2023 if any of this column not exist or wrong value or table does not exist 
+    public int deleteCustomer(Customer customer) throws Exception {
+        // TODO: 7/29/2023 if any of this column not exist or wrong value or table does not exist
         String query = "DELETE FROM customers WHERE customerId=?";
-        ConnectionToDataBase connection;
+        int count = 0;
         try {
-            connection = new ConnectionToDataBase();
-            // TODO: 7/29/2023 if connection error and can't to connect 
-            Connection con = connection.connectToDataBase();
+            // TODO: 7/29/2023 if connection error and can't to connect
+            if (con == null) {
+                con = connection.connectToDataBase();
+            }
             PreparedStatement st = con.prepareStatement(query);
-            // TODO: 7/29/2023 if any type of this make error 
+            // TODO: 7/29/2023 if any type of this make error
             st.setInt(1, customer.getCustomerId());
-            st.executeUpdate();
+            count = st.executeUpdate();
             st.close();
-            // TODO: 7/29/2023 if disconnected false! 
+            // TODO: 7/29/2023 if disconnected false!
             connection.disconnectToDataBase();
+            con = null;
         } catch (Exception e) {
-            // TODO: 7/29/2023 My exception and handel it 
+            // TODO: 7/29/2023 My exception and handel it
             e.printStackTrace();
         }
+        return count;
     }
 }

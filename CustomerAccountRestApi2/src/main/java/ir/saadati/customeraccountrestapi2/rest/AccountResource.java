@@ -19,11 +19,11 @@ public class AccountResource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getAccounts() throws Exception {
-        List<Account> customers = accountDAO.getAllAccounts();
-        if (customers.size() == 0) {
+        List<Account> accounts = accountDAO.getAllAccounts();
+        if (accounts.size() == 0) {
             return Response.status(Response.Status.NOT_FOUND).entity("Entities not found!").build();
         } else {
-            return Response.ok(customers, MediaType.APPLICATION_JSON).build();
+            return Response.ok(accounts, MediaType.APPLICATION_JSON).build();
         }
     }
 

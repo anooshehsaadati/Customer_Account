@@ -9,9 +9,9 @@ public interface ICustomerDAO {
 
     Customer getCustomer(int customerId) throws Exception;
 
-    void createCustomer(Customer customer) throws Exception;
+    Customer createCustomer(Customer customer) throws Exception;
 
-    void updateCustomer(Customer customer) throws Exception;
+    Customer updateCustomer(Customer customer) throws Exception;
 
-    void deleteCustomer(Customer customer) throws Exception;
+    int deleteCustomer(Customer customer) throws Exception;
 }
