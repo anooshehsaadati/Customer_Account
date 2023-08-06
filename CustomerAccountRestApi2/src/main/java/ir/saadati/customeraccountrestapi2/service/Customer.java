@@ -3,20 +3,86 @@ package ir.saadati.customeraccountrestapi2.service;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Customer Class with attribute
+ *
+ * @author write with Anushe Saadati
+ */
 @XmlRootElement
 public class Customer {
+    /**
+     * customer id is unique and unique for each customer
+     */
     private int customerId;
+
+    /**
+     * first name of customer
+     */
     private String firstName;
+
+    /**
+     * last name of customer
+     */
     private String lastName;
+
+    /**
+     * identification number of customer
+     */
     private String idNumber;
+
+    /**
+     * phone number of customer
+     */
     private String phoneNumber;
+
+    /**
+     * home/work address of customer
+     */
     private String address;
+
+    /**
+     * email address of customer
+     */
     private String email;
+
+    /**
+     * date of birth of customer
+     */
     private String birthDate;
+
+    /**
+     * gender of customer
+     * 0: No gender
+     * 1: Female
+     * 2: Male
+     */
     private int Gender;
+
+    /**
+     * date and time of creation in database
+     */
     private String createdDate;
+
+    /**
+     * date and time of last update in database
+     */
     private String updatedDate;
 
+    /**
+     * Constructor for Customer Class and use for saving record of customer table to it
+     *
+     * @param customerId unique id
+     * @param firstName first name of customer
+     * @param lastName last name of customer
+     * @param idNumber identification number of customer
+     * @param phoneNumber phone number of customer
+     * @param address address of customer
+     * @param email email address of customer
+     * @param birthDate date of birth of customer
+     * @param gender gender of customer
+     * @param createdDate date and time of creation
+     * @param updatedDate date and time of last update
+     */
     public Customer(int customerId, String firstName, String lastName, String idNumber, String phoneNumber, String address, String email, String birthDate, int gender, String createdDate, String updatedDate) {
         this.customerId = customerId;
         this.setFirstName(firstName);
@@ -31,10 +97,24 @@ public class Customer {
         this.updatedDate = updatedDate;
     }
 
+    /**
+     * default Customer Constructor
+     */
     public Customer() {
 
     }
 
+    /**
+     * Constructor for Customer Class and use for create or update database
+     * @param firstName first name of customer
+     * @param lastName last name of customer
+     * @param idNumber identification number of customer
+     * @param phoneNumber phone number of customer
+     * @param address address of customer
+     * @param email email address of customer
+     * @param birthDate date of birth of customer
+     * @param gender gender of customer
+     */
     public Customer(String firstName, String lastName, String idNumber, String phoneNumber, String address, String email, String birthDate, int gender) {
         this.setFirstName(firstName);
         this.setLastName(lastName);
@@ -47,7 +127,7 @@ public class Customer {
     }
 
     /**
-     * return customerId attribute
+     * get customerId attribute
      *
      * @return customerId
      */
@@ -66,7 +146,7 @@ public class Customer {
     }
 
     /**
-     * return first Name attribute
+     * get first Name attribute
      *
      * @return first Name
      */
@@ -85,7 +165,7 @@ public class Customer {
     }
 
     /**
-     * return last Name attribute
+     * get last Name attribute
      *
      * @return lastName
      */
@@ -104,7 +184,7 @@ public class Customer {
     }
 
     /**
-     * return Full Name attribute
+     * get Full Name attribute
      *
      * @return Name
      */
@@ -114,7 +194,7 @@ public class Customer {
     }
 
     /**
-     * return id Number attribute
+     * get id Number attribute
      *
      * @return idNumber
      */
@@ -133,7 +213,7 @@ public class Customer {
     }
 
     /**
-     * return phone Number attribute
+     * get phone Number attribute
      *
      * @return phoneNumber
      */
@@ -152,7 +232,7 @@ public class Customer {
     }
 
     /**
-     * return address attribute
+     * get address attribute
      *
      * @return address
      */
@@ -171,7 +251,7 @@ public class Customer {
     }
 
     /**
-     * return email attribute
+     * get email attribute
      *
      * @return email
      */
@@ -190,7 +270,7 @@ public class Customer {
     }
 
     /**
-     * return birth Data attribute
+     * get birth Data attribute
      *
      * @return birthDate
      */
@@ -209,7 +289,7 @@ public class Customer {
     }
 
     /**
-     * return Gender attribute
+     * get Gender attribute
      *
      * @return Gender
      */
@@ -228,7 +308,7 @@ public class Customer {
     }
 
     /**
-     * return created Date attribute
+     * get created Date attribute
      *
      * @return createdDate
      */
@@ -238,7 +318,7 @@ public class Customer {
     }
 
     /**
-     * return updated Date attribute
+     * get updated Date attribute
      *
      * @return updatedDate
      */
@@ -247,6 +327,11 @@ public class Customer {
         return updatedDate;
     }
 
+    /**
+     * change all attribute of Customer Class to string
+     *
+     * @return string of all attribute of Customer class
+     */
     @Override
     public String toString() {
         return "Customer{" + "customerId=" + customerId + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", idNumber='" + idNumber + '\'' + ", phoneNumber='" + phoneNumber + '\'' + ", address='" + address + '\'' + ", email='" + email + '\'' + ", birthDate='" + birthDate + '\'' + ", Gender=" + Gender + ", createdDate='" + createdDate + '\'' + ", updatedDate='" + updatedDate + '\'' + '}';

@@ -9,10 +9,30 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class of Customer data access for CRUD operation with database implements from ICustomerDAO
+ *
+ * @author write with Anushe Saadati
+ */
 public class CustomerDAO implements ICustomerDAO {
+    /**
+     * attribute connection that object of class ConnectionToDataBase
+     * this is for connecting to database
+     */
     ConnectionToDataBase connection = new ConnectionToDataBase();
+
+    /**
+     * attribute con that object of class Connection
+     * this is for saving connection and use for Statement
+     */
     Connection con = null;
 
+    /**
+     * Select all customers from database and return as a list of objects
+     *
+     * @return List<Customer> list of customers
+     * @throws Exception connecting to database
+     */
     @Override
     public List<Customer> getAllCustomers() throws Exception {
         // TODO: 7/29/2023 if customers table isn't exist --> error 
@@ -51,6 +71,13 @@ public class CustomerDAO implements ICustomerDAO {
         return customers;
     }
 
+    /**
+     * Select specific customer from database and return as an object
+     *
+     * @param customerId specific id for searching specific customer
+     * @return Customer object of specific customer
+     * @throws Exception connecting to database
+     */
     @Override
     public Customer getCustomer(int customerId) throws Exception {
         // TODO: 7/29/2023 if customerId doesn't exist or table doesn't exist 
@@ -90,6 +117,13 @@ public class CustomerDAO implements ICustomerDAO {
         return customer;
     }
 
+    /**
+     * Create specific customer and save it to database
+     *
+     * @param customer specific customer object
+     * @return Customer object of specific customer
+     * @throws Exception connecting to database
+     */
     @Override
     public Customer createCustomer(Customer customer) throws Exception {
         PreparedStatement st;
@@ -149,6 +183,13 @@ public class CustomerDAO implements ICustomerDAO {
         return customerCreated;
     }
 
+    /**
+     * Update specific customer with specific id and save it to database
+     *
+     * @param customer specific customer object
+     * @return Customer object of specific customer
+     * @throws Exception connecting to database
+     */
     @Override
     public Customer updateCustomer(Customer customer) throws Exception {
         PreparedStatement st;
@@ -201,6 +242,13 @@ public class CustomerDAO implements ICustomerDAO {
         return customerCreated;
     }
 
+    /**
+     * Delete specific customer with specific id from database
+     *
+     * @param customer specific customer object
+     * @return int count of row effected
+     * @throws Exception connecting to database
+     */
     @Override
     public int deleteCustomer(Customer customer) throws Exception {
         // TODO: 7/29/2023 if any of this column not exist or wrong value or table does not exist

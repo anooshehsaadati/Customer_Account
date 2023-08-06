@@ -7,10 +7,30 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class of Account data access for CRUD operation with database and implements from IAccountDAO interface
+ *
+ * @author write with Anushe Saadati
+ */
 public class AccountDAO implements IAccountDAO {
+    /**
+     * attribute connection that object of class ConnectionToDataBase
+     * this is for connecting to database
+     */
     ConnectionToDataBase connection = new ConnectionToDataBase();
+
+    /**
+     * attribute con that object of class Connection
+     * this is for saving connection and use for Statement
+     */
     Connection con = null;
 
+    /**
+     * Select all accounts from database and return as a list of objects
+     *
+     * @return List<Account> list of accounts
+     * @throws Exception connecting to database
+     */
     @Override
     public List<Account> getAllAccounts() throws Exception {
         // TODO: 7/29/2023 if accounts table isn't exist --> error
@@ -43,6 +63,13 @@ public class AccountDAO implements IAccountDAO {
         return accounts;
     }
 
+    /**
+     * Select specific account from database and return as an object
+     *
+     * @param accountId specific id for searching specific account
+     * @return Account object of specific account
+     * @throws Exception connecting to database
+     */
     @Override
     public Account getAccount(int accountId) throws Exception {
         // TODO: 7/29/2023 if accountId doesn't exist or table doesn't exist
@@ -76,6 +103,13 @@ public class AccountDAO implements IAccountDAO {
         return account;
     }
 
+    /**
+     * Create specific account and save it to database
+     *
+     * @param account specific account object
+     * @return Account object of specific account
+     * @throws Exception connecting to database
+     */
     @Override
     public Account createAccount(Account account) throws Exception {
         PreparedStatement st;
@@ -110,8 +144,7 @@ public class AccountDAO implements IAccountDAO {
                         accountCreated = this.getAccount(accountId);
                     }
                 }
-            }
-            else {
+            } else {
                 int accountId = rs.getInt("accountId");
                 accountCreated = this.getAccount(accountId);
             }
@@ -126,6 +159,13 @@ public class AccountDAO implements IAccountDAO {
         return accountCreated;
     }
 
+    /**
+     * Update specific account with specific id and save it to database
+     *
+     * @param account specific account object
+     * @return Account object of specific account
+     * @throws Exception connecting to database
+     */
     @Override
     public Account updateAccount(Account account) throws Exception {
         PreparedStatement st;
@@ -168,6 +208,13 @@ public class AccountDAO implements IAccountDAO {
         return accountCreated;
     }
 
+    /**
+     * Delete specific account with specific id from database
+     *
+     * @param account specific account object
+     * @return int count of row effected
+     * @throws Exception connecting to database
+     */
     @Override
     public int deleteAccount(Account account) throws Exception {
         // TODO: 7/29/2023 if any of this column not exist or wrong value or table does not exist

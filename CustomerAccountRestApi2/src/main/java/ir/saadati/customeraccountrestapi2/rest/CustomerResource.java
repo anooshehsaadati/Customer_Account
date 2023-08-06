@@ -10,11 +10,34 @@ import jakarta.ws.rs.core.Response;
 
 import java.util.List;
 
+/**
+ * Customer Resource for connection between rest api and classes
+ * in path /customers
+ * support all CRUD method
+ *
+ * @author write with Anushe Saadati
+ */
 @Path("customers")
 public class CustomerResource {
+    /**
+     * account data access object is object of AccountDAO
+     * and connect to database for CRUD operations
+     */
     AccountDAO accountDAO = new AccountDAO();
+
+    /**
+     * customer data access object is object of CustomerDAO
+     * and connect to database for CRUD operations
+     */
     CustomerDAO customerDAO = new CustomerDAO();
 
+    /**
+     * this is get method and return all customers
+     * return in format JSON
+     *
+     * @return Response of success/failure
+     * @throws Exception connecting to database
+     */
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -27,6 +50,14 @@ public class CustomerResource {
         }
     }
 
+    /**
+     * this is get method and return specific customer with id
+     * return in format JSON
+     *
+     * @param id specific id of customer
+     * @return Response of success/failure
+     * @throws Exception connecting to database
+     */
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -40,6 +71,14 @@ public class CustomerResource {
         }
     }
 
+    /**
+     * this is post method and create specific customer and return object of customer if success creation
+     * return in format JSON
+     *
+     * @param customer specific customer
+     * @return Response of success/failure
+     * @throws Exception connecting to database
+     */
     @POST
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -52,6 +91,15 @@ public class CustomerResource {
         }
     }
 
+    /**
+     * this is put method and update specific customer with id and return object of customer if success update
+     * return in format JSON
+     *
+     * @param customer specific customer
+     * @param id       specific customer id
+     * @return Response of success/failure
+     * @throws Exception connecting to database
+     */
     @PUT
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -76,6 +124,17 @@ public class CustomerResource {
         }
     }
 
+    /**
+     * this is deleted method and delete specific customer with id and return object of customer if success delete
+     * return in format JSON
+     * this method has 2 scenario
+     * scenario1: delete All Account of this Customer
+     * scenario2: can't delete this customer when have any account
+     *
+     * @param id specific customer id
+     * @return Response of success/failure
+     * @throws Exception connecting to database
+     */
     @DELETE
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})

@@ -3,14 +3,48 @@ package ir.saadati.customeraccountrestapi2.service;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Account Class with attribute and related to Customer Class
+ * each customer can more than one account but unique account number
+ *
+ * @author write with Anushe Saadati
+ */
 @XmlRootElement
 public class Account {
+    /**
+     * account id is unique and unique for each account
+     */
     private int accountId;
+
+    /**
+     * customer id is key for relation between account and customer
+     */
     private int customerId;
+
+    /**
+     * account number is unique for each customer
+     */
     private String accountNumber;
+
+    /**
+     * date and time of creation in database
+     */
     private String createdDate;
+
+    /**
+     * date and time of last update in database
+     */
     private String updatedDate;
 
+    /**
+     * Constructor for Account Class and use for saving record of account table to it
+     *
+     * @param accountId     unique id
+     * @param customerId    relation between account and customer
+     * @param accountNumber account number is unique for each customer
+     * @param createdDate   date and time of creation
+     * @param updatedDate   date and time of last update
+     */
     public Account(int accountId, int customerId, String accountNumber, String createdDate, String updatedDate) {
         this.accountId = accountId;
         this.setCustomerId(customerId);
@@ -19,17 +53,26 @@ public class Account {
         this.updatedDate = updatedDate;
     }
 
+    /**
+     * default Account Constructor
+     */
     public Account() {
 
     }
 
+    /**
+     * Constructor for Account Class and use for create or update database
+     *
+     * @param customerId    relation between account and customer
+     * @param accountNumber account number is unique for each customer
+     */
     public Account(int customerId, String accountNumber) {
         this.setCustomerId(customerId);
         this.setAccountNumber(accountNumber);
     }
 
     /**
-     * return accountId attribute
+     * get accountId attribute
      *
      * @return accountId
      */
@@ -48,7 +91,7 @@ public class Account {
     }
 
     /**
-     * return customerId attribute
+     * get customerId attribute
      *
      * @return customerId
      */
@@ -67,7 +110,7 @@ public class Account {
     }
 
     /**
-     * return accountNumber attribute
+     * get accountNumber attribute
      *
      * @return accountNumber
      */
@@ -86,7 +129,7 @@ public class Account {
     }
 
     /**
-     * return createdDate attribute
+     * get createdDate attribute
      *
      * @return createdDate
      */
@@ -96,7 +139,7 @@ public class Account {
     }
 
     /**
-     * return updatedDate attribute
+     * get updatedDate attribute
      *
      * @return updatedDate
      */
@@ -105,6 +148,11 @@ public class Account {
         return updatedDate;
     }
 
+    /**
+     * change all attribute of Account Class to string
+     *
+     * @return string of all attribute of Account class
+     */
     @Override
     public String toString() {
         return "Account{" + "accountId=" + accountId + ", customerId=" + customerId + ", accountNumber='" + accountNumber + '\'' + ", createdDate='" + createdDate + '\'' + ", updatedDate='" + updatedDate + '\'' + '}';
