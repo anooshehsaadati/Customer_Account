@@ -39,7 +39,6 @@ public class CustomerDAO implements ICustomerDAO {
         String query = "SELECT * FROM customers";
         List<Customer> customers = new ArrayList<Customer>();
         try {
-            // TODO: 7/29/2023 if connection error and can't to connect
             if (con == null) {
                 con = connection.connectToDataBase();
             }
@@ -61,7 +60,6 @@ public class CustomerDAO implements ICustomerDAO {
                 customers.add(new Customer(customerId, firstName, lastName, idNumber, phoneNumber, address, email, birthDate, gender, createdDate, updatedDate));
             }
             st.close();
-            // TODO: 7/29/2023 if disconnected false!
             connection.disconnectToDataBase();
             con = null;
         } catch (Exception e) {
@@ -84,7 +82,6 @@ public class CustomerDAO implements ICustomerDAO {
         String query = "SELECT * FROM customers WHERE customerId=" + customerId;
         Customer customer = null;
         try {
-            // TODO: 7/29/2023 if connection error and can't to connect
             if (con == null) {
                 con = connection.connectToDataBase();
             }
@@ -107,7 +104,6 @@ public class CustomerDAO implements ICustomerDAO {
                 customer = new Customer();
             }
             st.close();
-            // TODO: 7/29/2023 if disconnected false!
             connection.disconnectToDataBase();
             con = null;
         } catch (Exception e) {
@@ -130,7 +126,6 @@ public class CustomerDAO implements ICustomerDAO {
         Customer customerCreated = new Customer();
         String queryCheck = "SELECT * FROM customers WHERE idNumber=?";
         try {
-            // TODO: 7/29/2023 if connection error and can't to connect
             if (con == null) {
                 con = connection.connectToDataBase();
             }
@@ -173,7 +168,6 @@ public class CustomerDAO implements ICustomerDAO {
             }
 
             st.close();
-            // TODO: 7/29/2023 if disconnected false!
             connection.disconnectToDataBase();
             con = null;
         } catch (Exception e) {
@@ -196,7 +190,6 @@ public class CustomerDAO implements ICustomerDAO {
         Customer customerCreated = new Customer();
         String queryCheck = "SELECT * FROM customers WHERE idNumber=?";
         try {
-            // TODO: 7/29/2023 if connection error and can't to connect
             if (con == null) {
                 con = connection.connectToDataBase();
             }
@@ -232,7 +225,6 @@ public class CustomerDAO implements ICustomerDAO {
                 }
             }
             st.close();
-            // TODO: 7/29/2023 if disconnected false!
             connection.disconnectToDataBase();
             con = null;
         } catch (Exception e) {
@@ -255,7 +247,6 @@ public class CustomerDAO implements ICustomerDAO {
         String query = "DELETE FROM customers WHERE customerId=?";
         int count = 0;
         try {
-            // TODO: 7/29/2023 if connection error and can't to connect
             if (con == null) {
                 con = connection.connectToDataBase();
             }
@@ -264,7 +255,6 @@ public class CustomerDAO implements ICustomerDAO {
             st.setInt(1, customer.getCustomerId());
             count = st.executeUpdate();
             st.close();
-            // TODO: 7/29/2023 if disconnected false!
             connection.disconnectToDataBase();
             con = null;
         } catch (Exception e) {

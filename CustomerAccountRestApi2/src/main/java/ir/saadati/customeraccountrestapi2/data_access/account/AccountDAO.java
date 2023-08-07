@@ -37,7 +37,6 @@ public class AccountDAO implements IAccountDAO {
         String query = "SELECT * FROM accounts";
         List<Account> accounts = new ArrayList<>();
         try {
-            // TODO: 7/29/2023 if connection error and can't to connect
             if (con == null) {
                 con = connection.connectToDataBase();
             }
@@ -53,7 +52,6 @@ public class AccountDAO implements IAccountDAO {
                 accounts.add(new Account(accountId, customerId, accountNumber, createdDate, updatedDate));
             }
             st.close();
-            // TODO: 7/29/2023 if disconnected false!
             connection.disconnectToDataBase();
             con = null;
         } catch (Exception e) {
@@ -76,7 +74,6 @@ public class AccountDAO implements IAccountDAO {
         String query = "SELECT * FROM accounts WHERE accountId=" + accountId;
         Account account = null;
         try {
-            // TODO: 7/29/2023 if connection error and can't to connect
             if (con == null) {
                 con = connection.connectToDataBase();
             }
@@ -93,7 +90,6 @@ public class AccountDAO implements IAccountDAO {
                 account = new Account();
             }
             st.close();
-            // TODO: 7/29/2023 if disconnected false!
             connection.disconnectToDataBase();
             con = null;
         } catch (Exception e) {
@@ -116,7 +112,6 @@ public class AccountDAO implements IAccountDAO {
         Account accountCreated = new Account();
         String queryCheck = "SELECT * FROM accounts WHERE accountNumber=? AND customerId=?";
         try {
-            // TODO: 7/29/2023 if connection error and can't to connect
             if (con == null) {
                 con = connection.connectToDataBase();
             }
@@ -149,7 +144,6 @@ public class AccountDAO implements IAccountDAO {
                 accountCreated = this.getAccount(accountId);
             }
             st.close();
-            // TODO: 7/29/2023 if disconnected false!
             connection.disconnectToDataBase();
             con = null;
         } catch (Exception e) {
@@ -172,7 +166,6 @@ public class AccountDAO implements IAccountDAO {
         Account accountCreated = new Account();
         String queryCheck = "SELECT * FROM accounts WHERE accountNumber=? AND customerId=?";
         try {
-            // TODO: 7/29/2023 if connection error and can't to connect
             if (con == null) {
                 con = connection.connectToDataBase();
             }
@@ -198,7 +191,6 @@ public class AccountDAO implements IAccountDAO {
                 }
             }
             st.close();
-            // TODO: 7/29/2023 if disconnected false!
             connection.disconnectToDataBase();
             con = null;
         } catch (Exception e) {
@@ -221,7 +213,6 @@ public class AccountDAO implements IAccountDAO {
         String query = "DELETE FROM accounts WHERE accountId=?";
         int count = 0;
         try {
-            // TODO: 7/29/2023 if connection error and can't to connect
             if (con == null) {
                 con = connection.connectToDataBase();
             }
@@ -230,7 +221,6 @@ public class AccountDAO implements IAccountDAO {
             st.setInt(1, account.getAccountId());
             count = st.executeUpdate();
             st.close();
-            // TODO: 7/29/2023 if disconnected false!
             connection.disconnectToDataBase();
             con = null;
         } catch (Exception e) {
