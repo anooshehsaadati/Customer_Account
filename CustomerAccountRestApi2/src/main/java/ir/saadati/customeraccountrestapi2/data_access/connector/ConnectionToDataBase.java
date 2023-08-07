@@ -1,5 +1,7 @@
 package ir.saadati.customeraccountrestapi2.data_access.connector;
 
+import ir.saadati.customeraccountrestapi2.service.exception_handling.ConnectionToDataBaseException;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -18,9 +20,10 @@ public class ConnectionToDataBase implements IConnectionToDataBase {
      * Handle Class Not Found Exception and SQL Exception and Unknown exception
      *
      * @return Connection object
+     * @throws Exception Throw Exception and Stop program
      */
     @Override
-    public Connection connectToDataBase() {
+    public Connection connectToDataBase() throws Exception {
         String url = "jdbc:mysql://localhost:3306/account_customer_interview";
         String username = "root";
         String password = "";
@@ -29,27 +32,28 @@ public class ConnectionToDataBase implements IConnectionToDataBase {
             con = DriverManager.getConnection(url, username, password);
             return con;
         } catch (ClassNotFoundException e) {
-            System.out.println("Class not found. Please add JDBC driver.");
+            throw new ConnectionToDataBaseException("Class not found. Please add JDBC driver.");
         } catch (SQLException e) {
-            System.out.println("Can't connect to database. Check your connection.");
+            throw new ConnectionToDataBaseException("Can't connect to database. Check your connection.");
         } catch (Exception e) {
-            System.out.println("Unknown exception." + e);
+            throw new ConnectionToDataBaseException("Unknown Exception " + e);
         }
-        return null;
     }
 
     /**
      * disconnect to database and return nothing
      * Handle SQL Exception and Unknown exception
+     *
+     * @throws Exception Throw Exception and Stop program
      */
     @Override
-    public void disconnectToDataBase() {
+    public void disconnectToDataBase() throws Exception {
         try {
             con.close();
         } catch (SQLException e) {
-            System.out.println("Can't disconnect from database.");
+            throw new ConnectionToDataBaseException("Can't disconnect from database.");
         } catch (Exception e) {
-            System.out.println("Unknown exception." + e);
+            throw new ConnectionToDataBaseException("Unknown Exception " + e);
         }
     }
 }

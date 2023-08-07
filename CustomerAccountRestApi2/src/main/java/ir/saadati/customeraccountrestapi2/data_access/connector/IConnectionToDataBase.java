@@ -12,11 +12,13 @@ public interface IConnectionToDataBase {
      * connect to database and return connection object
      *
      * @return Connection object
+     * @throws Exception Throw Exception and Stop program
      */
-    Connection connectToDataBase();
+    Connection connectToDataBase() throws Exception;
 
     /**
      * disconnect to database and return nothing
+     * @throws Exception Throw Exception and Stop program
      */
-    void disconnectToDataBase();
+    void disconnectToDataBase() throws Exception;
 }
