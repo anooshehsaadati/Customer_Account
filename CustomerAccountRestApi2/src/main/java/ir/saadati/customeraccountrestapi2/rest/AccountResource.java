@@ -18,7 +18,7 @@ import java.util.List;
  * @author write with Anushe Saadati
  */
 @Path("accounts")
-public class AccountResource {
+public class AccountResource extends Resource {
     /**
      * account data access object is object of AccountDAO
      * and connect to database for CRUD operations
@@ -39,9 +39,10 @@ public class AccountResource {
      * @throws Exception connecting to database
      */
     @GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getAccounts() throws Exception {
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Override
+    public Response gets() throws Exception {
         List<Account> accounts = accountDAO.getAllAccounts();
         if (accounts.size() == 0) {
             return Response.status(Response.Status.NOT_FOUND).entity("Entities not found!").build();
@@ -60,9 +61,10 @@ public class AccountResource {
      */
     @GET
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getAccount(@PathParam("id") int id) throws Exception {
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Override
+    public Response get(@PathParam("id") int id) throws Exception {
         Account account = accountDAO.getAccount(id);
         if (account.getAccountId() == 0) {
             return Response.status(Response.Status.NOT_FOUND).entity("Entity not found for Account ID: " + id).build();
@@ -75,24 +77,30 @@ public class AccountResource {
      * this is post method and create specific account and return object of account if success creation
      * return in format JSON
      *
-     * @param account specific account
+     * @param object specific account
      * @return Response of success/failure
      * @throws Exception connecting to database
      */
     @POST
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response createAccount(Account account) throws Exception {
-        Customer customerWithId = customerDAO.getCustomer(account.getCustomerId());
-        if (customerWithId.getCustomerId() != 0) {
-            Account accountCreated = accountDAO.createAccount(account);
-            if (accountCreated.getAccountId() != 0) {
-                return Response.ok(accountCreated, MediaType.APPLICATION_JSON).build();
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Override
+    public Response create(Object object) throws Exception {
+        if (object instanceof Account) {
+            Account account = (Account) object;
+            Customer customerWithId = customerDAO.getCustomer(account.getCustomerId());
+            if (customerWithId.getCustomerId() != 0) {
+                Account accountCreated = accountDAO.createAccount(account);
+                if (accountCreated.getAccountId() != 0) {
+                    return Response.ok(accountCreated, MediaType.APPLICATION_JSON).build();
+                } else {
+                    return Response.status(Response.Status.NOT_FOUND).entity("No rows were affected in the create process.").build();
+                }
             } else {
-                return Response.status(Response.Status.NOT_FOUND).entity("No rows were affected in the create process.").build();
+                return Response.status(Response.Status.BAD_REQUEST).entity("The provided foreign key value does not match any existing entry in the main table. Please provide a valid foreign key value.").build();
             }
         } else {
-            return Response.status(Response.Status.BAD_REQUEST).entity("The provided foreign key value does not match any existing entry in the main table. Please provide a valid foreign key value.").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("Wrong input type").build();
         }
     }
 
@@ -100,37 +108,43 @@ public class AccountResource {
      * this is put method and update specific account with id and return object of account if success update
      * return in format JSON
      *
-     * @param account specific account
-     * @param id      specific account id
+     * @param object specific account
+     * @param id     specific account id
      * @return Response of success/failure
      * @throws Exception connecting to database
      */
     @PUT
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response updateAccount(@PathParam("id") int id, Account account) throws Exception {
-        Customer customerWithId = customerDAO.getCustomer(account.getCustomerId());
-        if (customerWithId.getCustomerId() != 0) {
-            Account accountWithId = accountDAO.getAccount(id);
-            if (accountWithId.getAccountId() == 0) {
-                Account accountCreated = accountDAO.createAccount(account);
-                if (accountCreated.getAccountId() != 0) {
-                    return Response.ok(accountCreated, MediaType.APPLICATION_JSON).build();
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Override
+    public Response update(@PathParam("id") int id, Object object) throws Exception {
+        if (object instanceof Account) {
+            Account account = (Account) object;
+            Customer customerWithId = customerDAO.getCustomer(account.getCustomerId());
+            if (customerWithId.getCustomerId() != 0) {
+                Account accountWithId = accountDAO.getAccount(id);
+                if (accountWithId.getAccountId() == 0) {
+                    Account accountCreated = accountDAO.createAccount(account);
+                    if (accountCreated.getAccountId() != 0) {
+                        return Response.ok(accountCreated, MediaType.APPLICATION_JSON).build();
+                    } else {
+                        return Response.status(Response.Status.NOT_FOUND).entity("The requested resource with ID " + id + " could not be found. No rows were affected in the create process.").build();
+                    }
                 } else {
-                    return Response.status(Response.Status.NOT_FOUND).entity("The requested resource with ID " + id + " could not be found. No rows were affected in the create process.").build();
+                    account.setAccountId(accountWithId.getAccountId());
+                    Account accountUpdated = accountDAO.updateAccount(account);
+                    if (accountUpdated.getAccountId() != 0) {
+                        return Response.ok(accountUpdated, MediaType.APPLICATION_JSON).build();
+                    } else {
+                        return Response.status(Response.Status.NOT_FOUND).entity("The requested resource with ID " + id + " exists. No rows were affected in the update process.").build();
+                    }
                 }
             } else {
-                account.setAccountId(accountWithId.getAccountId());
-                Account accountUpdated = accountDAO.updateAccount(account);
-                if (accountUpdated.getAccountId() != 0) {
-                    return Response.ok(accountUpdated, MediaType.APPLICATION_JSON).build();
-                } else {
-                    return Response.status(Response.Status.NOT_FOUND).entity("The requested resource with ID " + id + " exists. No rows were affected in the update process.").build();
-                }
+                return Response.status(Response.Status.BAD_REQUEST).entity("The provided foreign key value does not match any existing entry in the main table. Please provide a valid foreign key value.").build();
             }
         } else {
-            return Response.status(Response.Status.BAD_REQUEST).entity("The provided foreign key value does not match any existing entry in the main table. Please provide a valid foreign key value.").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("Wrong input type").build();
         }
     }
 
@@ -144,9 +158,10 @@ public class AccountResource {
      */
     @DELETE
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response deleteAccount(@PathParam("id") int id) throws Exception {
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Override
+    public Response delete(@PathParam("id") int id) throws Exception {
         Account account = accountDAO.getAccount(id);
         if (account.getAccountId() != 0) {
             int count = accountDAO.deleteAccount(account);

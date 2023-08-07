@@ -18,7 +18,7 @@ import java.util.List;
  * @author write with Anushe Saadati
  */
 @Path("customers")
-public class CustomerResource {
+public class CustomerResource extends Resource {
     /**
      * account data access object is object of AccountDAO
      * and connect to database for CRUD operations
@@ -39,9 +39,10 @@ public class CustomerResource {
      * @throws Exception connecting to database
      */
     @GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getCustomers() throws Exception {
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Override
+    public Response gets() throws Exception {
         List<Customer> customers = customerDAO.getAllCustomers();
         if (customers.size() == 0) {
             return Response.status(Response.Status.NOT_FOUND).entity("Entities not found!").build();
@@ -60,9 +61,10 @@ public class CustomerResource {
      */
     @GET
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getCustomer(@PathParam("id") int id) throws Exception {
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Override
+    public Response get(@PathParam("id") int id) throws Exception {
         Customer customer = customerDAO.getCustomer(id);
         if (customer.getCustomerId() == 0) {
             return Response.status(Response.Status.NOT_FOUND).entity("Entity not found for Account ID: " + id).build();
@@ -75,19 +77,25 @@ public class CustomerResource {
      * this is post method and create specific customer and return object of customer if success creation
      * return in format JSON
      *
-     * @param customer specific customer
+     * @param object specific customer
      * @return Response of success/failure
      * @throws Exception connecting to database
      */
     @POST
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response createCustomer(Customer customer) throws Exception {
-        Customer customerCreated = customerDAO.createCustomer(customer);
-        if (customerCreated.getCustomerId() != 0) {
-            return Response.ok(customerCreated, MediaType.APPLICATION_JSON).build();
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Override
+    public Response create(Object object) throws Exception {
+        if (object instanceof Customer) {
+            Customer customer = (Customer) object;
+            Customer customerCreated = customerDAO.createCustomer(customer);
+            if (customerCreated.getCustomerId() != 0) {
+                return Response.ok(customerCreated, MediaType.APPLICATION_JSON).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).entity("No rows were affected in the create process.").build();
+            }
         } else {
-            return Response.status(Response.Status.NOT_FOUND).entity("No rows were affected in the create process.").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("Wrong input type").build();
         }
     }
 
@@ -95,32 +103,38 @@ public class CustomerResource {
      * this is put method and update specific customer with id and return object of customer if success update
      * return in format JSON
      *
-     * @param customer specific customer
-     * @param id       specific customer id
+     * @param object specific customer
+     * @param id     specific customer id
      * @return Response of success/failure
      * @throws Exception connecting to database
      */
     @PUT
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response updateCustomer(@PathParam("id") int id, Customer customer) throws Exception {
-        Customer customerWithId = customerDAO.getCustomer(id);
-        if (customerWithId.getCustomerId() == 0) {
-            Customer customerCreated = customerDAO.createCustomer(customer);
-            if (customerCreated.getCustomerId() != 0) {
-                return Response.ok(customerCreated, MediaType.APPLICATION_JSON).build();
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Override
+    public Response update(@PathParam("id") int id, Object object) throws Exception {
+        if (object instanceof Customer) {
+            Customer customer = (Customer) object;
+            Customer customerWithId = customerDAO.getCustomer(id);
+            if (customerWithId.getCustomerId() == 0) {
+                Customer customerCreated = customerDAO.createCustomer(customer);
+                if (customerCreated.getCustomerId() != 0) {
+                    return Response.ok(customerCreated, MediaType.APPLICATION_JSON).build();
+                } else {
+                    return Response.status(Response.Status.NOT_FOUND).entity("The requested resource with ID " + id + " could not be found. No rows were affected in the create process.").build();
+                }
             } else {
-                return Response.status(Response.Status.NOT_FOUND).entity("The requested resource with ID " + id + " could not be found. No rows were affected in the create process.").build();
+                customer.setCustomerId(customerWithId.getCustomerId());
+                Customer customerUpdated = customerDAO.updateCustomer(customer);
+                if (customerUpdated.getCustomerId() != 0) {
+                    return Response.ok(customerUpdated, MediaType.APPLICATION_JSON).build();
+                } else {
+                    return Response.status(Response.Status.NOT_FOUND).entity("The requested resource with ID " + id + " exists. No rows were affected in the update process.").build();
+                }
             }
         } else {
-            customer.setCustomerId(customerWithId.getCustomerId());
-            Customer customerUpdated = customerDAO.updateCustomer(customer);
-            if (customerUpdated.getCustomerId() != 0) {
-                return Response.ok(customerUpdated, MediaType.APPLICATION_JSON).build();
-            } else {
-                return Response.status(Response.Status.NOT_FOUND).entity("The requested resource with ID " + id + " exists. No rows were affected in the update process.").build();
-            }
+            return Response.status(Response.Status.BAD_REQUEST).entity("Wrong input type").build();
         }
     }
 
@@ -137,9 +151,10 @@ public class CustomerResource {
      */
     @DELETE
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response deleteCustomer(@PathParam("id") int id) throws Exception {
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Override
+    public Response delete(@PathParam("id") int id) throws Exception {
         int scenario = 2;
         // first scenario -- delete All Account of this Customer
         if (scenario == 1) {
