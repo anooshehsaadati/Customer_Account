@@ -6,7 +6,13 @@ package ir.saadati.customeraccountrestapi2.service.exception_handling;
  *
  * @author write with Anushe Saadati
  */
-public class ExistingTableException extends Exception{
+public class ExistingTableException extends Exception {
+    /**
+     * Constructs a new exception without any input
+     */
+    public ExistingTableException() {
+    }
+
     /**
      * Handling not exist table of database with exception
      * Constructs a new exception with the specified detail message.
@@ -14,6 +20,6 @@ public class ExistingTableException extends Exception{
      * @param message the detail message.
      */
     public ExistingTableException(String message) {
-        System.out.println("Table " + message + " Not exist. please create table and try again.");;
+        System.out.println("Table " + message + " Not exist. please create table and try again.");
     }
 }

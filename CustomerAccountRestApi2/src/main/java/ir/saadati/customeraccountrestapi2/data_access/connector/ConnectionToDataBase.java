@@ -32,11 +32,11 @@ public class ConnectionToDataBase implements IConnectionToDataBase {
             con = DriverManager.getConnection(url, username, password);
             return con;
         } catch (ClassNotFoundException e) {
-            throw new ConnectionToDataBaseException("Class not found. Please add JDBC driver.");
+            throw new ConnectionToDataBaseException("Class not found. Please add JDBC driver.", new ClassNotFoundException());
         } catch (SQLException e) {
-            throw new ConnectionToDataBaseException("Can't connect to database. Check your connection.");
+            throw new ConnectionToDataBaseException("Can't connect to database. Check your connection.", new SQLException());
         } catch (Exception e) {
-            throw new ConnectionToDataBaseException("Unknown Exception " + e);
+            throw new ConnectionToDataBaseException("Unknown Exception", new Exception());
         }
     }
 
@@ -51,9 +51,9 @@ public class ConnectionToDataBase implements IConnectionToDataBase {
         try {
             con.close();
         } catch (SQLException e) {
-            throw new ConnectionToDataBaseException("Can't disconnect from database.");
+            throw new ConnectionToDataBaseException("Can't disconnect from database.", new SQLException());
         } catch (Exception e) {
-            throw new ConnectionToDataBaseException("Unknown Exception " + e);
+            throw new ConnectionToDataBaseException("Unknown Exception", new Exception());
         }
     }
 }
