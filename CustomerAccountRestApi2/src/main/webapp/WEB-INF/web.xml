@@ -3,6 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
          version="5.0">
+    <display-name>Customer Account</display-name>
     <servlet>
         <servlet-name>Jersey web application</servlet-name>
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
@@ -16,4 +17,7 @@
         <servlet-name>Jersey web application</servlet-name>
         <url-pattern>/web-api/*</url-pattern>
     </servlet-mapping>
+    <listener>
+        <listener-class>ir.saadati.customeraccountrestapi2.service.Log4j2ConfigInitializer</listener-class>
+    </listener>
 </web-app>
