@@ -82,6 +82,36 @@ public class CustomerResource extends Resource {
     }
 
     /**
+     * this is get method and return specific accounts of customer with id
+     * return in format JSON
+     *
+     * @param id specific id of customer
+     * @return Response of success/failure
+     * @throws Exception connecting to database
+     */
+    @GET
+    @Path("{id}/accounts")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getAccounts(@PathParam("id") int id) throws Exception {
+        logger.info("Get accounts of customer with id " + id);
+        Customer customer = customerDAO.getCustomer(id);
+        if (customer.getCustomerId() == 0) {
+            logger.error("Entity not found for Customer ID: " + id);
+            return Response.status(Response.Status.NOT_FOUND).entity("Entity not found for Customer ID: " + id).build();
+        } else {
+            List<Account> accounts = accountDAO.getAllAccountsOfCustomer(customer.getCustomerId());
+            if (accounts.size() == 0) {
+                logger.error("Entities not found! No Accounts!");
+                return Response.status(Response.Status.NOT_FOUND).entity("Entities not found! No Accounts!").build();
+            } else {
+                logger.info("Finish accounts of customer with id " + id);
+                return Response.ok(accounts, MediaType.APPLICATION_JSON).build();
+            }
+        }
+    }
+
+    /**
      * this is post method and create specific customer and return object of customer if success creation
      * return in format JSON
      *

@@ -70,6 +70,49 @@ public class AccountDAO implements IAccountDAO {
     }
 
     /**
+     * Select all accounts of specific customer id from database and return as a list of objects
+     *
+     * @param specificCustomerId specific id for searching all account of customer
+     * @return List<Account> list of accounts
+     * @throws Exception connecting to database
+     */
+    public List<Account> getAllAccountsOfCustomer(int specificCustomerId) throws Exception {
+        String query = "SELECT * FROM accounts WHERE customerId=" + specificCustomerId;
+        List<Account> accounts = new ArrayList<>();
+        try {
+            if (con == null) {
+                con = connection.connectToDataBase();
+            }
+            DatabaseMetaData meta = con.getMetaData();
+            ResultSet res = meta.getTables(null, null, "accounts", new String[]{"TABLE"});
+            if (res.next()) {
+                Statement st = con.createStatement();
+                ResultSet rs = st.executeQuery(query);
+                while (rs.next()) {
+                    int accountId = rs.getInt("accountId");
+                    int customerId = rs.getInt("customerId");
+                    String accountNumber = rs.getString("accountNumber");
+                    String createdDate = rs.getString("createdDate");
+                    String updatedDate = rs.getString("updatedDate");
+                    accounts.add(new Account(accountId, customerId, accountNumber, createdDate, updatedDate));
+                }
+                st.close();
+                connection.disconnectToDataBase();
+                con = null;
+            } else {
+                connection.disconnectToDataBase();
+                con = null;
+                throw new ExistingTableException("accounts");
+            }
+        } catch (SQLSyntaxErrorException e) {
+            System.out.println("Syntax error on query. please check it." + e);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return accounts;
+    }
+
+    /**
      * Select specific account from database and return as an object
      *
      * @param accountId specific id for searching specific account
