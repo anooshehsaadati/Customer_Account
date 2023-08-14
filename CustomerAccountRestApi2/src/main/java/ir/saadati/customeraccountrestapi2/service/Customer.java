@@ -184,16 +184,6 @@ public class Customer {
     }
 
     /**
-     * get Full Name attribute
-     *
-     * @return Name
-     */
-    @XmlElement
-    public String getName() {
-        return this.getFirstName() + " " + this.getLastName();
-    }
-
-    /**
      * get id Number attribute
      *
      * @return idNumber

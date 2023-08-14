@@ -133,11 +133,11 @@ public class CustomerResource extends Resource {
             customer.setCustomerId(customerWithId.getCustomerId());
             Customer customerUpdated = customerDAO.updateCustomer(customer);
             if (customerUpdated.getCustomerId() != 0) {
-                logger.info("Finish update customer with id " + id);
+                logger.info("Finish update customer with id " + customerUpdated.getCustomerId());
                 return Response.ok(customerUpdated, MediaType.APPLICATION_JSON).build();
             } else {
-                logger.error("The requested resource with ID " + id + " exists. No rows were affected in the update process.");
-                return Response.status(Response.Status.NOT_FOUND).entity("The requested resource with ID " + id + " exists. No rows were affected in the update process.").build();
+                logger.error("The requested resource exists. No rows were affected in the update process.");
+                return Response.status(Response.Status.NOT_FOUND).entity("The requested resource exists. No rows were affected in the update process.").build();
             }
         }
     }

@@ -142,11 +142,11 @@ public class AccountResource extends Resource {
                 account.setAccountId(accountWithId.getAccountId());
                 Account accountUpdated = accountDAO.updateAccount(account);
                 if (accountUpdated.getAccountId() != 0) {
-                    logger.info("Finish update account with id " + id);
+                    logger.info("Finish update account with id " + accountUpdated.getAccountId());
                     return Response.ok(accountUpdated, MediaType.APPLICATION_JSON).build();
                 } else {
-                    logger.error("The requested resource with ID " + id + " exists. No rows were affected in the update process.");
-                    return Response.status(Response.Status.NOT_FOUND).entity("The requested resource with ID " + id + " exists. No rows were affected in the update process.").build();
+                    logger.error("The requested resource exists. No rows were affected in the update process.");
+                    return Response.status(Response.Status.NOT_FOUND).entity("The requested resource exists. No rows were affected in the update process.").build();
                 }
             }
         } else {
