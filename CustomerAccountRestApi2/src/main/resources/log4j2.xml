@@ -18,6 +18,10 @@
             <AppenderRef ref="Console"/>
             <AppenderRef ref="File"/>
         </Logger>
+        <Logger name="AccountResource" level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
+        </Logger>
         <Root level="info">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="File"/>

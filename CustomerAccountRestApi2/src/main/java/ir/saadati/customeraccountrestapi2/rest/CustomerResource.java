@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Path("customers")
 public class CustomerResource extends Resource {
-    private static final Logger logger = LogManager.getLogger(CustomerResource.class);
+    private static final Logger logger = LogManager.getLogger("CustomerResource");
     /**
      * account data access object is object of AccountDAO
      * and connect to database for CRUD operations
