@@ -85,30 +85,22 @@ public class CustomerResource extends Resource {
      * this is post method and create specific customer and return object of customer if success creation
      * return in format JSON
      *
-     * @param object specific customer
+     * @param customer specific customer
      * @return Response of success/failure
      * @throws Exception connecting to database
      */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Override
-    public Response create(Object object) throws Exception {
-        logger.info("Create object");
-        if (object instanceof Customer) {
-            logger.info("Create customer object");
-            Customer customer = (Customer) object;
-            Customer customerCreated = customerDAO.createCustomer(customer);
-            if (customerCreated.getCustomerId() != 0) {
-                logger.info("Finish create customer");
-                return Response.ok(customerCreated, MediaType.APPLICATION_JSON).build();
-            } else {
-                logger.error("No rows were affected in the create process.");
-                return Response.status(Response.Status.NOT_FOUND).entity("No rows were affected in the create process.").build();
-            }
+    public Response create(Customer customer) throws Exception {
+        logger.info("Create customer object");
+        Customer customerCreated = customerDAO.createCustomer(customer);
+        if (customerCreated.getCustomerId() != 0) {
+            logger.info("Finish create customer");
+            return Response.ok(customerCreated, MediaType.APPLICATION_JSON).build();
         } else {
-            logger.error("Wrong input type");
-            return Response.status(Response.Status.BAD_REQUEST).entity("Wrong input type").build();
+            logger.error("No rows were affected in the create process.");
+            return Response.status(Response.Status.NOT_FOUND).entity("No rows were affected in the create process.").build();
         }
     }
 
@@ -116,8 +108,8 @@ public class CustomerResource extends Resource {
      * this is put method and update specific customer with id and return object of customer if success update
      * return in format JSON
      *
-     * @param object specific customer
-     * @param id     specific customer id
+     * @param customer specific customer
+     * @param id       specific customer id
      * @return Response of success/failure
      * @throws Exception connecting to database
      */
@@ -125,36 +117,28 @@ public class CustomerResource extends Resource {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Override
-    public Response update(@PathParam("id") int id, Object object) throws Exception {
-        logger.info("Update object");
-        if (object instanceof Customer) {
-            logger.info("Update customer object");
-            Customer customer = (Customer) object;
-            Customer customerWithId = customerDAO.getCustomer(id);
-            if (customerWithId.getCustomerId() == 0) {
-                Customer customerCreated = customerDAO.createCustomer(customer);
-                if (customerCreated.getCustomerId() != 0) {
-                    logger.info("Finish create customer because there is no record for this id " + id + " id for new customer is " + customerCreated.getCustomerId());
-                    return Response.ok(customerCreated, MediaType.APPLICATION_JSON).build();
-                } else {
-                    logger.error("The requested resource with ID " + id + " could not be found. No rows were affected in the create process.");
-                    return Response.status(Response.Status.NOT_FOUND).entity("The requested resource with ID " + id + " could not be found. No rows were affected in the create process.").build();
-                }
+    public Response update(@PathParam("id") int id, Customer customer) throws Exception {
+        logger.info("Update customer object");
+        Customer customerWithId = customerDAO.getCustomer(id);
+        if (customerWithId.getCustomerId() == 0) {
+            Customer customerCreated = customerDAO.createCustomer(customer);
+            if (customerCreated.getCustomerId() != 0) {
+                logger.info("Finish create customer because there is no record for this id " + id + " id for new customer is " + customerCreated.getCustomerId());
+                return Response.ok(customerCreated, MediaType.APPLICATION_JSON).build();
             } else {
-                customer.setCustomerId(customerWithId.getCustomerId());
-                Customer customerUpdated = customerDAO.updateCustomer(customer);
-                if (customerUpdated.getCustomerId() != 0) {
-                    logger.info("Finish update customer with id " + id);
-                    return Response.ok(customerUpdated, MediaType.APPLICATION_JSON).build();
-                } else {
-                    logger.error("The requested resource with ID " + id + " exists. No rows were affected in the update process.");
-                    return Response.status(Response.Status.NOT_FOUND).entity("The requested resource with ID " + id + " exists. No rows were affected in the update process.").build();
-                }
+                logger.error("The requested resource with ID " + id + " could not be found. No rows were affected in the create process.");
+                return Response.status(Response.Status.NOT_FOUND).entity("The requested resource with ID " + id + " could not be found. No rows were affected in the create process.").build();
             }
         } else {
-            logger.error("Wrong input type");
-            return Response.status(Response.Status.BAD_REQUEST).entity("Wrong input type").build();
+            customer.setCustomerId(customerWithId.getCustomerId());
+            Customer customerUpdated = customerDAO.updateCustomer(customer);
+            if (customerUpdated.getCustomerId() != 0) {
+                logger.info("Finish update customer with id " + id);
+                return Response.ok(customerUpdated, MediaType.APPLICATION_JSON).build();
+            } else {
+                logger.error("The requested resource with ID " + id + " exists. No rows were affected in the update process.");
+                return Response.status(Response.Status.NOT_FOUND).entity("The requested resource with ID " + id + " exists. No rows were affected in the update process.").build();
+            }
         }
     }
 

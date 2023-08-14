@@ -86,36 +86,28 @@ public class AccountResource extends Resource {
      * this is post method and create specific account and return object of account if success creation
      * return in format JSON
      *
-     * @param object specific account
+     * @param account specific account
      * @return Response of success/failure
      * @throws Exception connecting to database
      */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Override
-    public Response create(Object object) throws Exception {
-        logger.info("Create object");
-        if (object instanceof Account) {
-            logger.info("Create account object");
-            Account account = (Account) object;
-            Customer customerWithId = customerDAO.getCustomer(account.getCustomerId());
-            if (customerWithId.getCustomerId() != 0) {
-                Account accountCreated = accountDAO.createAccount(account);
-                if (accountCreated.getAccountId() != 0) {
-                    logger.info("Finish create account");
-                    return Response.ok(accountCreated, MediaType.APPLICATION_JSON).build();
-                } else {
-                    logger.error("No rows were affected in the create process.");
-                    return Response.status(Response.Status.NOT_FOUND).entity("No rows were affected in the create process.").build();
-                }
+    public Response create(Account account) throws Exception {
+        logger.info("Create account object");
+        Customer customerWithId = customerDAO.getCustomer(account.getCustomerId());
+        if (customerWithId.getCustomerId() != 0) {
+            Account accountCreated = accountDAO.createAccount(account);
+            if (accountCreated.getAccountId() != 0) {
+                logger.info("Finish create account");
+                return Response.ok(accountCreated, MediaType.APPLICATION_JSON).build();
             } else {
-                logger.error("The provided foreign key value does not match any existing entry in the main table. Please provide a valid foreign key value.");
-                return Response.status(Response.Status.BAD_REQUEST).entity("The provided foreign key value does not match any existing entry in the main table. Please provide a valid foreign key value.").build();
+                logger.error("No rows were affected in the create process.");
+                return Response.status(Response.Status.NOT_FOUND).entity("No rows were affected in the create process.").build();
             }
         } else {
-            logger.error("Wrong input type");
-            return Response.status(Response.Status.BAD_REQUEST).entity("Wrong input type").build();
+            logger.error("The provided foreign key value does not match any existing entry in the main table. Please provide a valid foreign key value.");
+            return Response.status(Response.Status.BAD_REQUEST).entity("The provided foreign key value does not match any existing entry in the main table. Please provide a valid foreign key value.").build();
         }
     }
 
@@ -123,8 +115,8 @@ public class AccountResource extends Resource {
      * this is put method and update specific account with id and return object of account if success update
      * return in format JSON
      *
-     * @param object specific account
-     * @param id     specific account id
+     * @param account specific account
+     * @param id      specific account id
      * @return Response of success/failure
      * @throws Exception connecting to database
      */
@@ -132,42 +124,34 @@ public class AccountResource extends Resource {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Override
-    public Response update(@PathParam("id") int id, Object object) throws Exception {
-        logger.info("Update object");
-        if (object instanceof Account) {
-            logger.info("Update account object");
-            Account account = (Account) object;
-            Customer customerWithId = customerDAO.getCustomer(account.getCustomerId());
-            if (customerWithId.getCustomerId() != 0) {
-                Account accountWithId = accountDAO.getAccount(id);
-                if (accountWithId.getAccountId() == 0) {
-                    Account accountCreated = accountDAO.createAccount(account);
-                    if (accountCreated.getAccountId() != 0) {
-                        logger.info("Finish create account because there is no record for this id " + id + " id for new account is " + accountCreated.getAccountId());
-                        return Response.ok(accountCreated, MediaType.APPLICATION_JSON).build();
-                    } else {
-                        logger.error("The requested resource with ID " + id + " could not be found. No rows were affected in the create process.");
-                        return Response.status(Response.Status.NOT_FOUND).entity("The requested resource with ID " + id + " could not be found. No rows were affected in the create process.").build();
-                    }
+    public Response update(@PathParam("id") int id, Account account) throws Exception {
+        logger.info("Update account object");
+        Customer customerWithId = customerDAO.getCustomer(account.getCustomerId());
+        if (customerWithId.getCustomerId() != 0) {
+            Account accountWithId = accountDAO.getAccount(id);
+            if (accountWithId.getAccountId() == 0) {
+                Account accountCreated = accountDAO.createAccount(account);
+                if (accountCreated.getAccountId() != 0) {
+                    logger.info("Finish create account because there is no record for this id " + id + " id for new account is " + accountCreated.getAccountId());
+                    return Response.ok(accountCreated, MediaType.APPLICATION_JSON).build();
                 } else {
-                    account.setAccountId(accountWithId.getAccountId());
-                    Account accountUpdated = accountDAO.updateAccount(account);
-                    if (accountUpdated.getAccountId() != 0) {
-                        logger.info("Finish update account with id " + id);
-                        return Response.ok(accountUpdated, MediaType.APPLICATION_JSON).build();
-                    } else {
-                        logger.error("The requested resource with ID " + id + " exists. No rows were affected in the update process.");
-                        return Response.status(Response.Status.NOT_FOUND).entity("The requested resource with ID " + id + " exists. No rows were affected in the update process.").build();
-                    }
+                    logger.error("The requested resource with ID " + id + " could not be found. No rows were affected in the create process.");
+                    return Response.status(Response.Status.NOT_FOUND).entity("The requested resource with ID " + id + " could not be found. No rows were affected in the create process.").build();
                 }
             } else {
-                logger.error("The provided foreign key value does not match any existing entry in the main table. Please provide a valid foreign key value.");
-                return Response.status(Response.Status.BAD_REQUEST).entity("The provided foreign key value does not match any existing entry in the main table. Please provide a valid foreign key value.").build();
+                account.setAccountId(accountWithId.getAccountId());
+                Account accountUpdated = accountDAO.updateAccount(account);
+                if (accountUpdated.getAccountId() != 0) {
+                    logger.info("Finish update account with id " + id);
+                    return Response.ok(accountUpdated, MediaType.APPLICATION_JSON).build();
+                } else {
+                    logger.error("The requested resource with ID " + id + " exists. No rows were affected in the update process.");
+                    return Response.status(Response.Status.NOT_FOUND).entity("The requested resource with ID " + id + " exists. No rows were affected in the update process.").build();
+                }
             }
         } else {
-            logger.error("Wrong input type");
-            return Response.status(Response.Status.BAD_REQUEST).entity("Wrong input type").build();
+            logger.error("The provided foreign key value does not match any existing entry in the main table. Please provide a valid foreign key value.");
+            return Response.status(Response.Status.BAD_REQUEST).entity("The provided foreign key value does not match any existing entry in the main table. Please provide a valid foreign key value.").build();
         }
     }
 
