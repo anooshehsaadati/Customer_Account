@@ -207,7 +207,7 @@ public class CustomerDAO implements ICustomerDAO {
     public Customer updateCustomer(Customer customer) throws Exception {
         PreparedStatement st;
         Customer customerCreated = new Customer();
-        String queryCheck = "SELECT * FROM customers WHERE idNumber=?";
+        String queryCheck = "SELECT * FROM customers WHERE idNumber=? AND customerId=?";
         try {
             if (con == null) {
                 con = connection.connectToDataBase();
@@ -217,8 +217,9 @@ public class CustomerDAO implements ICustomerDAO {
             if (res.next()) {
                 st = con.prepareStatement(queryCheck);
                 st.setString(1, customer.getIdNumber());
+                st.setInt(2, customer.getCustomerId());
                 ResultSet rs = st.executeQuery();
-                if (!rs.next()) {
+                if (rs.next()) {
                     String query = "UPDATE customers SET firstName=?, lastName=?, idNumber=?, phoneNumber=?, address=?, email=?, birthDate=?, gender=?, updatedDate=? WHERE customerId=?";
                     st = con.prepareStatement(query);
                     st.setString(1, customer.getFirstName());
